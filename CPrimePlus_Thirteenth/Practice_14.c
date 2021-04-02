@@ -13,7 +13,7 @@ int main(void)
     char picture[HEIGHT][WIDTH + 1]; // 存储图片的字符串数组
     char list[10] = {' ', '.', '\'', ':', '~', '*', '=', '&', '%', '#'}; // 字符数组来存储数字-字符对应列表
 
-    if ((fp = fopen("chj", "r")) == NULL)
+    if ((fp = fopen("Practice_14_data", "r")) == NULL)
     {
         fprintf(stderr, "Error in opening the file chj.\n");
         exit(EXIT_FAILURE);
