@@ -25,8 +25,8 @@ void Init_Airplane(struct Giant_Airplane_Seat *, int); // 初始化结构数组
 void Print_Empty_Seats(struct Giant_Airplane_Seat *, int); // 打印空余位置数量
 void Print_Empty_Seats_List(struct Giant_Airplane_Seat *, int); // 打印空余座位列表
 void Print_All_Seats(struct Giant_Airplane_Seat *, int); // 打印所有座位
-void Assign_Seats(struct Giant_Airplane_Seat *, int); // 预定座位
-void Cancel_Reserve(struct Giant_Airplane_Seat *, int); // 取消座位预定
+int Assign_Seats(struct Giant_Airplane_Seat *, int); // 预定座位
+int Cancel_Reserve(struct Giant_Airplane_Seat *, int); // 取消座位预定
 
 int main(void)
 {
@@ -137,14 +137,15 @@ void Print_All_Seats(struct Giant_Airplane_Seat * ps, int seats_count)
             printf("\n");
     }
 }
-void Assign_Seats(struct Giant_Airplane_Seat * ps, int seats_count)
+int Assign_Seats(struct Giant_Airplane_Seat * ps, int seats_count)
 {
     int seat_sequence;
+    char ch;
 
     puts("Please enter the seat sequence number you want to reserve");
     scanf("%d", &seat_sequence);
     eat_line();
-    while (seat_sequence < 0 || seat_sequence > seats_count)
+    while (seat_sequence < 0 || seat_sequence > seats_count - 1)
     {
         puts("The seats sequence is between 0 ~ 11\nPlease enter again:");
         scanf("%d", &seat_sequence);
@@ -156,6 +157,11 @@ void Assign_Seats(struct Giant_Airplane_Seat * ps, int seats_count)
         scanf("%d", &seat_sequence);
         eat_line();
     }
+    puts("Do you want to continue:Y/N");
+    ch = tolower(getchar());
+    eat_line();
+    if ('n' == ch)
+        return 0;
     ps[seat_sequence].is_reserve = true;
     puts("Now enter you name:");
     puts("Your first name:");
@@ -164,17 +170,20 @@ void Assign_Seats(struct Giant_Airplane_Seat * ps, int seats_count)
     s_gets(ps[seat_sequence].people_name.last_name, LEN);
     printf("Dear %s%s, you have successfully reserved Seat-%d.\n", ps[seat_sequence].people_name.first_name,
             ps[seat_sequence].people_name.last_name, seat_sequence);
+
+    return 0;
 }
-void Cancel_Reserve(struct Giant_Airplane_Seat * ps, int seats_count)
+int Cancel_Reserve(struct Giant_Airplane_Seat * ps, int seats_count)
 {
     char full_name[2 * LEN];
     char temp[2 * LEN];
     int seat_sequence;
+    char ch;
 
     puts("Please enter you Seat sequence, sir");
     scanf("%d", &seat_sequence);
     eat_line();
-    while (seat_sequence < 0 || seat_sequence > seats_count)
+    while (seat_sequence < 0 || seat_sequence > seats_count - 1)
     {
         puts("The seats sequence is between 0 ~ 11\nPlease check and enter again:");
         scanf("%d", &seat_sequence);
@@ -186,6 +195,10 @@ void Cancel_Reserve(struct Giant_Airplane_Seat * ps, int seats_count)
         scanf("%d", &seat_sequence);
         eat_line();
     }
+    puts("Do you want to continue:(Y/N)");
+    ch = tolower(getchar());
+    if ('n' == ch)
+        return 0;
     strcpy(full_name, ps[seat_sequence].people_name.first_name);
     strcat(full_name, ps[seat_sequence].people_name.last_name);
     puts("Please enter your full name, sir");
@@ -197,4 +210,6 @@ void Cancel_Reserve(struct Giant_Airplane_Seat * ps, int seats_count)
     }
     ps[seat_sequence].is_reserve = false;
     printf("Dear %s, Seats-%d reserve is successfully cancel.\n", full_name, seat_sequence);
+
+    return 0;
 }
