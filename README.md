@@ -24,6 +24,8 @@ Practice_序号.c		      	       --本章课后练习题
 CMakeLists.txt			       --CLion的编译文件 因为需要编译多个main函数
 ```
 
+ 这个练习题答案从C Prime Plus 的第三章开始，前两章练习题太简单，故没有放上去。
+
 ## C Prime Plus Book Code and Programming Exercise Answers
 
 > Author : Hanjie Chen
@@ -50,3 +52,4 @@ Practice_Sequence.c		      	       --exercise answer
 CMakeLists.txt			       --cmakelist of CLion because it need to complie mutiple main function
 ```
 
+The practice answer start from third Chapter, because the firt Chapter and the Second Chapter is too simple.
