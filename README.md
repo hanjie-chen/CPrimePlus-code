@@ -26,6 +26,8 @@ CMakeLists.txt			       --CLion的编译文件 因为需要编译多个main函�
 
  这个练习题答案从C Prime Plus 的第三章开始，前两章练习题太简单，故没有放上去。
 
+本代码中几乎所有和文件进行交互的程序（第14章）是通过gcc编译的，几乎所有的接受命令行参数的程序是通过gcc编译的
+
 ## C Prime Plus Book Code and Programming Exercise Answers
 
 > Author : Hanjie Chen
@@ -53,3 +55,5 @@ CMakeLists.txt			       --cmakelist of CLion because it need to complie mutiple 
 ```
 
 The practice answer start from third Chapter, because the firt Chapter and the Second Chapter is too simple.
+
+Nearly all code in Chapter 14 is complied by gcc and all porgram that accepted command line argument is complied by gcc
