@@ -49,8 +49,8 @@ The folder contain the 5 type file
 ```c
 main.c				       --record the time per chapter start and my idea;(writed by Chinese)
 Book_Sequence.c			       --book code; may be different with book
-Review_Sequence.c		               --the review program
-Practice_Sequence.c		      	       --exercise answer
+Review_Sequence.c		       --the review program
+Practice_Sequence.c		       --exercise answer
 CMakeLists.txt			       --cmakelist of CLion because it need to complie mutiple main function
 ```
 
