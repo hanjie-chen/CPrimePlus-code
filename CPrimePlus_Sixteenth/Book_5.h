@@ -1,3 +1,5 @@
+// 如果检测到未定义该宏 即第一次包含该文件 那么就执下面的内容
+// 如果检测到已经定义过该宏 那么就不会执行下面的这些内容
 #ifndef CPRIMEPLUS_SIXTEENTH_BOOK_5_H
 #define CPRIMEPLUS_SIXTEENTH_BOOK_5_H
 
