@@ -24,9 +24,27 @@ Practice_序号.c		      	       --本章课后练习题
 CMakeLists.txt			       --CLion的编译文件 因为需要编译多个main函数
 ```
 
- 这个练习题答案从C Prime Plus 的第三章开始，前两章练习题太简单，故没有放上去。
+***
 
-本代码中几乎所有和文件进行交互的程序（第14章）是通过gcc编译的，几乎所有的接受命令行参数的程序是通过gcc编译的
+### 关于代码的一些说明
+
+- 这个练习题答案从C Prime Plus 的第三章开始，前两章练习题太简单，故没有放上去。
+
+- 本代码中几乎所有和文件进行交互的程序（第14章）是通过gcc编译的，几乎所有的接受命令行参数的程序是通过gcc编译的
+
+- 从第九章Book_8_main.c之前的代码都是使用下面的形式引入stdio.h
+
+```c
+#include "stdio.h"
+```
+
+这个错误在写Book_8的时候才注意到在后面的章节中已经进行了修正 使用了正确的形式引入stdio.h
+
+```c
+#include <stdio.h>
+```
+
+两者的区别在Book_8_main.c的注释中有说明
 
 ## C Prime Plus Book Code and Programming Exercise Answers
 
@@ -54,6 +72,27 @@ Practice_Sequence.c		       --exercise answer
 CMakeLists.txt			       --cmakelist of CLion because it need to complie mutiple main function
 ```
 
-The practice answer start from third Chapter, because the firt Chapter and the Second Chapter is too simple.
+***
 
-Nearly all code in Chapter 14 is complied by gcc and all porgram that accepted command line argument is complied by gcc
+### Some profile about the code
+
+- The practice answer start from third Chapter, because the firt Chapter and the Second Chapter is too simple.
+
+- Nearly all code in Chapter 14 is complied by gcc and all porgram that accepted command line argument is complied by gcc
+
+- The code before Chapter Ninth Book_8_main.c using the following format include head file
+
+  ```c
+  #include "stdio.h"
+  ```
+
+  I noticed the error and fixed it in follow-up chapter code using the more correct way to include head file such as
+
+  ```c
+  #include <stdio.h>
+  ```
+
+  the difference between <> and "" was explain in Book_8_main.c in Chinese
+
+  
+
