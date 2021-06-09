@@ -22,6 +22,7 @@ static void DeleteAllNode(Tree_Node * root);
 void InitializeTree(Tree * point_tree)
 {
     point_tree->root = NULL;
+//    设置节点数量和宠物数量为0
     point_tree->node_count = 0;
     point_tree->pet_count = 0;
 }
