@@ -9,7 +9,6 @@ typedef struct pair {
     Tree_Node * children_node;
 } Pair;
 /* 下面这些函数是接口函数的配套函数 */
-static void CopyToNode(const Tree_Item * temp, Tree_Node * node_temp);
 // 创建一个新的节点
 static Tree_Node * MakeNode(const List_Item * list_temp);
 static void AddNode(Tree_Node * node_temp, Tree_Node * root);
@@ -17,25 +16,26 @@ static bool ToLeft(const char * pet_name_first,const char * pet_name_second);
 static bool ToRight(const char * pet_name_first,const char * pet_name_second);
 static Pair SeekItem(const char * pet_name,const Tree * point_tree);
 static void DeleteNode(Tree_Node * * ptr);
-static void InOrder(const Tree_Node * root, void (*function)(Tree_Item item));
+static void InOrder(Tree_Node * root, void (*function)(Tree_Item * item));
 static void DeleteAllNode(Tree_Node * root);
 
 void InitializeTree(Tree * point_tree)
 {
     point_tree->root = NULL;
-    point_tree->size = 0;
+    point_tree->node_count = 0;
+    point_tree->pet_count = 0;
 }
 bool TreeIsEmpty(const Tree * point_tree)
 {
-    return (point_tree->size == 0) ? true : false;
+    return (point_tree->node_count == 0) ? true : false;
 }
 bool TreeIsFull(const Tree * point_tree)
 {
-    return (point_tree->size == MAX_TREE) ? true : false;
+    return (point_tree->node_count == MAX_TREE) ? true : false;
 }
 int TreeItemCount(const Tree * point_tree)
 {
-    return point_tree->size;
+    return point_tree->pet_count;
 }
 bool AddTreeNode(const char * pet_name, const List_Item * list_temp, Tree * point_tree)
 {
@@ -49,28 +49,45 @@ bool AddTreeNode(const char * pet_name, const List_Item * list_temp, Tree * poin
 //    如果发现该宠物名存在 则为其添加一个链表项
     if (look != NULL)
     {
+        printf("Find the same name!\n");
         AddListItem(&(look->item.pet_kind), list_temp);
+        point_tree->pet_count++;
         return true;
     }
-    node_temp = MakeNode(list_temp);
-    if (node_temp == NULL)
-    {
-        fputs("Can not creat node", stderr);
-        return false;
-    }
-    point_tree->size++;
-    if (point_tree->root == NULL)
-        point_tree->root = node_temp;
     else
-        AddNode(node_temp, point_tree->root);
+    {
+        printf("Create the new node!");
+        node_temp = MakeNode(list_temp);
+        if (node_temp == NULL)
+        {
+            fputs("Can not creat node", stderr);
+            return false;
+        }
+        strcpy(node_temp->item.pet_name, pet_name);
+        point_tree->pet_count++;
+//        只有当创建节点的时候节点数量添加
+        point_tree->node_count++;
+        if (point_tree->root == NULL)
+            point_tree->root = node_temp;
+        else
+            AddNode(node_temp, point_tree->root);
+
+        return true;
+    }
+}
+bool InTree(Tree_Item * item, const Tree * point_tree)
+{
+    Tree_Node * look;
+
+    look = SeekItem(item->pet_name, point_tree).children_node;
+    if (look == NULL)
+        return false;
+    else
+        item->pet_kind = look->item.pet_kind;
 
     return true;
 }
-bool InTree(const char * pet_name,const Tree * point_tree)
-{
-    return (SeekItem(pet_name, point_tree).children_node != NULL) ? true : false;
-}
-bool DeleteTreeNode(const char * pet_name, char * pet_kind, Tree * point_tree)
+bool DeleteTreeNode(const char * pet_name, const List_Item * pet_kind, Tree * point_tree)
 {
     Pair look;
 
@@ -80,6 +97,7 @@ bool DeleteTreeNode(const char * pet_name, char * pet_kind, Tree * point_tree)
         fputs("Can not find the pet! Please check!", stderr);
         return false;
     }
+//    如果这个节点的宠物只有一只 那么删除整个节点 否则只删除相应的宠物
     if (ListItemCount(&look.children_node->item.pet_kind) == 1)
     {
         if (look.father_node == NULL)  //查找的项为根节点
@@ -88,16 +106,19 @@ bool DeleteTreeNode(const char * pet_name, char * pet_kind, Tree * point_tree)
             DeleteNode(&look.father_node->left);
         else
             DeleteNode(&look.father_node->right);
-        point_tree->size--;
+        point_tree->node_count--;
+        point_tree->pet_count--;
     }
     else
     {
-
+        DeleteListNode(&(look.children_node->item.pet_kind), pet_kind);
+        point_tree->pet_count--;
     }
+
 
     return true;
 }
-void Tree_Traverse(const Tree * point_tree, void (*function)(Tree_Item item))
+void Tree_Traverse(const Tree * point_tree, void (*function)(Tree_Item * item))
 {
     if (point_tree->root == NULL)
         fputs("The tree is empty!", stderr);
@@ -111,7 +132,8 @@ void DeleteAll(Tree * point_tree)
     else
         DeleteAllNode(point_tree->root);
     point_tree->root = NULL;
-    point_tree->size = 0;
+    point_tree->node_count = 0;
+    point_tree->pet_count = 0;
 }
 
 static void DeleteAllNode(Tree_Node * root)
@@ -122,16 +144,18 @@ static void DeleteAllNode(Tree_Node * root)
     {
         pre_right = root->right;
         DeleteAllNode(root->left);
+//        删除该节点上的链表并销毁该节点
+        EmptyTheList(&(root->item.pet_kind));
         free(root);
         DeleteAllNode(pre_right);
     }
 }
-static void InOrder(const Tree_Node * root, void (*function)(Tree_Item item))
+static void InOrder(Tree_Node * root, void (*function)(Tree_Item * item))
 {
     if (root != NULL)
     {
         InOrder(root->right, function);
-        function(root->item);
+        function(&(root->item));
         InOrder(root->left, function);
     }
 }
@@ -145,12 +169,16 @@ static void DeleteNode(Tree_Node * * ptr)
     {
         temp = (*ptr);
         *ptr = (*ptr)->right;
+//        释放该节点上的链表
+        EmptyTheList(&(temp->item.pet_kind));
         free(temp);
     }
     else if ((*ptr)->right == NULL)
     {
         temp = (*ptr);
         *ptr = (*ptr)->right;
+//        释放该节点上的链表
+        EmptyTheList(&(temp->item.pet_kind));
         free(temp);
     }
     else // 如果被删除的节点存在两个子节点
@@ -160,6 +188,8 @@ static void DeleteNode(Tree_Node * * ptr)
             continue;
         temp->right = (*ptr)->right;
         temp = (*ptr);
+//        释放该节点上的链表
+        EmptyTheList(&(temp->item.pet_kind));
         free(temp);
     }
 }
@@ -216,7 +246,6 @@ static void AddNode(Tree_Node * node_temp, Tree_Node * root)
             root->left = node_temp;
         else
             AddNode(node_temp, root->left);
-
     }
 //        使用递归让节点往右下走
     else if (ToRight(node_temp->item.pet_name, root->item.pet_name))
@@ -225,7 +254,8 @@ static void AddNode(Tree_Node * node_temp, Tree_Node * root)
             root->right = node_temp;
         else
             AddNode(node_temp, root->right);
-    } else{
+    }
+    else{
         fputs("location error in AddNode() function!", stderr);
         exit(1);
     }
@@ -249,8 +279,4 @@ static bool ToRight(const char * pet_name_first,const char * pet_name_second)
         return true;
     else
         return false;
-}
-static void CopyToNode(const Tree_Item * temp, Tree_Node * node_temp)
-{
-    node_temp->item = * temp;
 }

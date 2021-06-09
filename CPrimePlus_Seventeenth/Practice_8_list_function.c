@@ -1,6 +1,7 @@
 #include "Practice_8_list.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //      设置链表为空
 void InitializeList(List * plist)
@@ -64,8 +65,43 @@ bool AddListItem(List * plist, const List_Item * item)
 
     return true;
 }
+bool DeleteListNode(List * plist, const List_Item * item)
+{
+    if (ListIsEmpty(plist))
+    {
+        fputs("The list is empty!", stderr);
+        return false;
+    }
+    List_Node * temp = plist->head;
+    List_Node * previous_temp = NULL;
+    while (temp)
+    {
+        if (strcmp(temp->list_item.pet_kind, item->pet_kind) == 0)
+            break;
+        previous_temp = temp;
+        temp = temp->next;
+    }
+    if (temp == NULL)
+    {
+        fputs("Can not find the pet kind, please check", stderr);
+        return false;
+    }
+//    如果为第一个原则则只需修改头指针 如果为中间元素则需修改previous_temp指针
+    if (temp == plist->head)
+        plist->head = plist->head->next;
+    else
+    {
+//        如果为最后一个元素则修改尾指针
+        if (temp == plist->end)
+            plist->end = previous_temp;
+        previous_temp->next = temp->next;
+    }
+    free(temp);
+
+    return true;
+}
 //      对链表每一个节点作用与p_function函数
-void List_Traverse(const List * plist, void(* p_function)(List_Item item))
+void List_Traverse(const List * plist, void(* p_function)(List_Item * item))
 {
     List_Node * per_node = plist->head;
 
@@ -76,7 +112,7 @@ void List_Traverse(const List * plist, void(* p_function)(List_Item item))
         while (per_node != NULL)
         {
 //        使用该函数作用与每一项节点
-            p_function(per_node->list_item);
+            p_function(&(per_node->list_item));
             per_node = per_node->next;
         }
 }

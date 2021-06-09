@@ -53,7 +53,7 @@ bool DeleteListNode(List * plist, const List_Item * item);
 // 操作        对链表中的每一项进行函数p_function的操作 并且该操作不改变链表中的任何值
 // 前置条件     plist指向一个初始化的链表 p_function指向一个函数指针 该函数返回值为void 接受一个Item类型的参数
 // 后置条件     p_function指向函数会作用用于每一个节点的Item类型
-void List_Traverse(const List * plist, void(* p_function)(List_Item item));
+void List_Traverse(const List * plist, void(* p_function)(List_Item * item));
 
 // 操作        释放已经分配的内存
 // 前置条件     plist指向一个已经初始化的数组
